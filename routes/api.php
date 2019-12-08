@@ -24,4 +24,12 @@ Route::prefix('v1')->namespace('Api')->group(function(){
         Route::resource('products', 'ProductsController');
 
     });
+
+
+    Route::name('users .')->group(function(){
+
+        Route::resource('users', 'UsersController');
+
+    });
+
 });
