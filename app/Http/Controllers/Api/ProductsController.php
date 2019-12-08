@@ -2,10 +2,11 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Api\ApiMessages;
+use App\Http\Requests\ProductsRequest;
 use App\Products;
 use http\Client\Curl\User;
 use http\Env\Response;
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
 class ProductsController extends Controller
@@ -33,18 +34,19 @@ class ProductsController extends Controller
 
             return response()->json([
                 'data' => [
-                    'msg' => 'Produto alterado com sucesso',
+                    'msg' => 'Produto al terado com sucesso',
                     'data' => $product
                 ]
             ], 200);
         }catch (\Exception $e){
-            return response()->json(['error' => $e->getMessage()], 401);
+            $message = new ApiMessages($e->getMessage());
+            return response()->json($message->getMessage(), 401);
         }
 
     }
 
 
-    public function store(Request $request){
+    public function store(ProductsRequest $request){
 
         $data = $request->all();
 
@@ -58,12 +60,13 @@ class ProductsController extends Controller
                 ]
             ], 200);
         }catch (\Exception $e){
-            return response()->json(['error' => $e->getMessage()], 401);
+            $message = new ApiMessages($e->getMessage());
+            return response()->json($message->getMessage(), 401);
         }
 
     }
 
-    public function update($id, Request $request){
+    public function update($id, ProductsRequest $request){
 
         $data = $request->all();
 
@@ -78,7 +81,8 @@ class ProductsController extends Controller
                 ]
             ], 200);
         }catch (\Exception $e){
-            return response()->json(['error' => $e->getMessage()], 401);
+            $message = new ApiMessages($e->getMessage());
+            return response()->json($message->getMessage(), 401);
         }
 
     }
@@ -97,7 +101,8 @@ class ProductsController extends Controller
                 ]
             ], 200);
         }catch (\Exception $e){
-            return response()->json(['error' => $e->getMessage()], 401);
+            $message = new ApiMessages($e->getMessage());
+            return response()->json($message->getMessage(), 401);
         }
 
     }
