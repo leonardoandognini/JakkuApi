@@ -32,7 +32,9 @@ Route::prefix('v1')->namespace('Api')->group(function(){
 
     });
 
-    Route::name('categories .')->group(function(){
+    Route::name('categories.')->group(function(){
+
+        Route::get('categories/{id}/products', 'CategoriesController@product');
 
         Route::resource('categories', 'CategoriesController');
 

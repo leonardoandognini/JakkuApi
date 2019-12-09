@@ -54,6 +54,11 @@ class ProductsController extends Controller
 
             $product = $this->products->create($data);
 
+            if (isset($data['categories']) && count($data['categories'])) {
+                $product->categories()->sync($data['categories']);
+            }
+
+
             return response()->json([
                 'data' => [
                     'msg' => 'Produto cadastrado com sucesso'
@@ -74,6 +79,10 @@ class ProductsController extends Controller
 
             $product = $this->products->findOrFail($id);
             $product->update($data);
+
+            if (isset($data['categories']) && count($data['categories'])) {
+                $product->categories()->sync($data['categories']);
+            }
 
             return response()->json([
                 'data' => [
