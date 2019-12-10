@@ -29,7 +29,7 @@ class ProductsController extends Controller
 
         try {
 
-            $product = $this->products->findOrFail($id);
+            $product = $this->products->with('images')->findOrFail($id);
 
 
             return response()->json([
@@ -49,13 +49,24 @@ class ProductsController extends Controller
     public function store(ProductsRequest $request){
 
         $data = $request->all();
-
+        $images = $request->file('images');
         try {
 
             $product = $this->products->create($data);
 
             if (isset($data['categories']) && count($data['categories'])) {
                 $product->categories()->sync($data['categories']);
+            }
+
+            if($images){
+                $imagesUploaded = [];
+                foreach ($images as $image){
+                   $path = $image->store('images', 'public');
+                   $imagesUploaded[] = ['image' => $path, 'is_image' => false];
+                }
+//dd($imagesUploaded);
+                $product->images()->createMany($imagesUploaded);
+
             }
 
 
@@ -74,6 +85,7 @@ class ProductsController extends Controller
     public function update($id, ProductsRequest $request){
 
         $data = $request->all();
+        $images = $request->file('images');
 
         try {
 
@@ -82,6 +94,17 @@ class ProductsController extends Controller
 
             if (isset($data['categories']) && count($data['categories'])) {
                 $product->categories()->sync($data['categories']);
+            }
+
+            if($images){
+                $imagesUploaded = [];
+                foreach ($images as $image){
+                    $path = $image->store('images', 'public');
+                    $imagesUploaded[] = ['image' => $path, 'is_image' => false];
+                }
+
+                $product->images()->createMany($imagesUploaded);
+
             }
 
             return response()->json([

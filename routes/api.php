@@ -40,4 +40,9 @@ Route::prefix('v1')->namespace('Api')->group(function(){
 
     });
 
+    Route::name('images.')->prefix('images')->group(function (){
+       Route::delete('/{id}', 'ProductsImagesController@delete')->name('delete');
+       Route::put('/set-img/{imageId}/{productId}', 'ProductsImagesController@setImg')->name('delete');
+    });
+
 });
