@@ -20,8 +20,10 @@ class ProductsController extends Controller
 
 
     public function index(){
-        $products = $this->products->paginate('10');
-        return response()->json($products, 200);
+        $products = auth('api')->user()->products();
+
+       // $products = $this->products->paginate('10');
+        return response()->json($products->paginate(10), 200);
     }
 
 
@@ -29,7 +31,7 @@ class ProductsController extends Controller
 
         try {
 
-            $product = $this->products->with('images')->findOrFail($id);
+            $product = auth('api')->user()->products()->with('images')->findOrFail($id);
 
 
             return response()->json([
@@ -51,6 +53,7 @@ class ProductsController extends Controller
         $data = $request->all();
         $images = $request->file('images');
         try {
+            $data['user_id'] = auth('api')->user()->id;
 
             $product = $this->products->create($data);
 
@@ -64,7 +67,6 @@ class ProductsController extends Controller
                    $path = $image->store('images', 'public');
                    $imagesUploaded[] = ['image' => $path, 'is_image' => false];
                 }
-//dd($imagesUploaded);
                 $product->images()->createMany($imagesUploaded);
 
             }
@@ -89,7 +91,7 @@ class ProductsController extends Controller
 
         try {
 
-            $product = $this->products->findOrFail($id);
+            $product = auth('api')->user()->products->findOrFail($id);
             $product->update($data);
 
             if (isset($data['categories']) && count($data['categories'])) {
@@ -124,7 +126,7 @@ class ProductsController extends Controller
 
         try {
 
-            $product = $this->products->findOrFail($id);
+            $product = auth('api')->user()->products->findOrFail($id);
             $product->delete();
 
             return response()->json([
